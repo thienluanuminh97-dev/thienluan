@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="vi">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lớp Học Thầy Luân - Trạm Vũ Trụ Tin học - Công nghệ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+   <style>
+        /* ================= BẢNG MÀU TƯƠI SÁNG, NGỘ NGHĨNH (KIDS THEME) ================= */
+        :root {
+            --primary: #48dbfb; /* Xanh dương nhạt rực rỡ */
+            --primary-dark: #0abde3;
+            --secondary: #ff9ff3; /* Hồng phấn đáng yêu */
+            --secondary-dark: #f368e0;
+            --success: #1dd1a1; /* Xanh lá mạ */
+            --success-dark: #10ac84;
+            --warning: #ff6b6b; /* Đỏ cam */
+            --warning-dark: #ee5253;
+            --yellow: #feca57; /* Vàng nắng ấm áp */
+            --yellow-dark: #ff9f43;
+            --dark: #222f3e; /* Chữ đậm để dễ đọc, bảo vệ mắt */
+            --bg-light: #f4f9f9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', 'Segoe UI', sans-serif; }
+
+        /* BẦU TRỜI TRONG XANH VÀ HỌA TIẾT CHẤM BI */
+        body {
+            background-color: #c7ecee;
+            background-image: radial-gradient(#dff9fb 4px, transparent 4px);
+            background-size: 40px 40px;
+            color: var(--dark);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* TẠO MÂY TRÔI SINH ĐỘNG */
+        body::before {
+            content: "☁️    ☁️";
+            position: fixed;
+            top: 50px;
+            left: -100px;
+            font-size: 80px;
+            opacity: 0.6;
+            white-space: pre;
+            word-spacing: 30vw;
+            z-index: -1;
+            animation: cloud-move 35s linear infinite;
+        }
+        @keyframes cloud-move {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(120vw); }
+        }
+
+        .container { width: 100%; max-width: 1200px; position: relative; display: flex; flex-direction: column; }
+
+        /* HIỆU ỨNG NHÚN NHẢY ĐÁNG YÊU */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes bounce-sm { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes popup { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* ================= HEADER ================= */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 30px; margin: 20px;
+            background: #ffffff;
+            border: 4px solid var(--dark); border-radius: 30px;
+            box-shadow: 0 8px 0 rgba(34, 47, 62, 0.15);
+            position: sticky; top: 15px; z-index: 100;
+        }
+        
+        .logo { font-size: 28px; font-weight: 900; color: var(--warning); text-decoration: none; display: flex; align-items: center; gap: 10px;}
+        .logo span { background: linear-gradient(90deg, var(--warning-dark), var(--yellow-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .header-right { display: flex; gap: 20px; align-items: center; }
+        .nav-links { list-style: none; display: flex; gap: 15px; }
+        .nav-links li a {
+            color: var(--dark); text-decoration: none; font-size: 18px; font-weight: 900;
+            padding: 8px 16px; border-radius: 20px; transition: 0.3s; border: 2px solid transparent;
+        }
+        .nav-links li a:hover { background: var(--yellow); border-color: var(--dark); transform: rotate(-3deg) scale(1.1); box-shadow: 0 4px 0 var(--dark);}
+
+        /* NÚT BẤM 3D ĐỒ CHƠI */
+        .btn-3d {
+            border: 3px solid var(--dark); padding: 12px 25px; border-radius: 25px; font-size: 18px; font-weight: 900; 
+            cursor: pointer; transition: all 0.1s; display: inline-block; text-decoration: none; text-align: center;
+        }
+        .login-btn {
+            background: var(--secondary); color: var(--dark); 
+            box-shadow: 0 6px 0 var(--dark);
+        }
+        .login-btn:hover { background: var(--secondary-dark); transform: translateY(-2px); box-shadow: 0 8px 0 var(--dark); }
+        .login-btn:active { transform: translateY(6px); box-shadow: 0 0px 0 var(--dark); }
+
+        /* ================= HERO SECTION ================= */
+        .hero { text-align: center; padding: 60px 20px; animation: float 3s ease-in-out infinite; }
+        .hero h1 {
+            font-size: 50px; font-weight: 900; line-height: 1.4; margin-bottom: 25px;
+            color: var(--dark); text-transform: uppercase;
+            text-shadow: 3px 3px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 8px 0 rgba(0,0,0,0.1);
+        }
+        .hero-btn {
+            background: var(--primary); color: var(--dark); font-size: 24px; border-width: 4px;
+            padding: 15px 45px; border-radius: 35px; box-shadow: 0 8px 0 var(--dark);
+            animation: bounce-sm 2s infinite;
+        }
+        .hero-btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 10px 0 var(--dark); animation: none; }
+        .hero-btn:active { transform: translateY(8px); box-shadow: 0 0px 0 var(--dark); }
+
+        /* ================= KHU VỰC BÀI HỌC ================= */
+        .section-title { text-align: center; font-size: 38px; color: var(--dark); margin: 30px 0; font-weight: 900; text-transform: uppercase;
+            text-shadow: 3px 3px 0 #fff, 0 6px 0 rgba(0,0,0,0.1); 
+        }
+        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding: 0 20px 40px; }
+
+        .card {
+            background: #ffffff; border-radius: 30px; padding: 25px; text-align: center;
+            border: 4px solid var(--dark); box-shadow: 0 10px 0 rgba(0,0,0,0.15);
+            transition: all 0.2s; cursor: pointer; position: relative;
+        }
+        .card:hover { transform: translateY(-10px) rotate(2deg); box-shadow: 0 15px 0 rgba(0,0,0,0.2); border-color: var(--primary-dark); background: #f0fdfa; }
+        
+        .card-icon {
+            font-size: 65px; margin: 0 auto 15px; width: 110px; height: 110px;
+            background: var(--bg-light); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 4px solid var(--dark); box-shadow: inset 0 -6px 0 rgba(0,0,0,0.1);
+        }
+        .card h3 { color: var(--dark); font-size: 24px; font-weight: 900; margin-bottom: 10px; }
+        .card p { color: #576574; font-size: 16px; line-height: 1.4; font-weight: 800;}
+        
+        .tag { display: inline-block; padding: 6px 15px; border-radius: 20px; font-weight: 900; font-size: 14px; margin-bottom: 12px; border: 2px solid var(--dark); box-shadow: 0 3px 0 var(--dark); }
+        .tag-it { background: var(--primary); color: var(--dark); }
+        .tag-tech { background: var(--yellow); color: var(--dark); }
+
+        /* ================= ĐẤU TRƯỜNG TRÍ TUỆ ================= */
+        .quiz-container {
+            background: #ffffff; border-radius: 40px; padding: 40px 40px 50px; margin: 20px 40px 60px;
+            border: 6px solid var(--dark); box-shadow: 0 15px 0 rgba(0,0,0,0.15);
+            background-image: radial-gradient(#f4f9f9 3px, transparent 3px);
+            background-size: 25px 25px;
+            position: relative;
+        }
+        
+        /* Trang trí thêm 2 ngôi sao nhảy múa ở góc bảng */
+        .quiz-container::before, .quiz-container::after {
+            content: "⭐"; position: absolute; font-size: 45px; top: -25px;
+            animation: bounce-sm 1.5s infinite alternate;
+        }
+        .quiz-container::before { left: 30px; }
+        .quiz-container::after { right: 30px; animation-delay: 0.5s; }
+
+        .quiz-title { text-align: center; margin-bottom: 30px; font-size: 42px; color: var(--warning-dark); font-weight: 900; text-shadow: 3px 3px 0 var(--dark), 5px 5px 0px #fff; text-transform: uppercase;}
+
+        .progress-bar-bg { width: 100%; height: 32px; background: var(--bg-light); border-radius: 16px; margin-bottom: 35px; padding: 4px; border: 4px solid var(--dark); box-shadow: inset 0 4px 0 rgba(0,0,0,0.1);}
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--success-dark)); border-radius: 10px; width: 0%; transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* ĐIỂM NHẤN 1: Đóng khung câu hỏi màu vàng rực */
+        .question { 
+            font-size: 32px; font-weight: 900; margin-bottom: 35px; text-align: center; color: var(--dark); line-height: 1.5; min-height: 45px;
+            background: #ffeaa7; padding: 25px 20px; border-radius: 25px;
+            border: 4px solid var(--dark); box-shadow: 0 8px 0 var(--dark);
+        }
+
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* ĐIỂM NHẤN 2: 4 Nút 4 màu riêng biệt */
+        .option-btn {
+            border: 4px solid var(--dark) !important; padding: 20px; font-size: 24px; font-weight: 900; border-radius: 25px;
+            cursor: pointer; transition: all 0.15s; color: var(--dark) !important;
+        }
+        
+        /* Nút 1: Hồng */
+        .option-btn:nth-child(1) { background: #ff9ff3 !important; box-shadow: 0 8px 0 var(--dark) !important;}
+        .option-btn:nth-child(1):hover { background: #f368e0 !important; transform: translateY(-4px); box-shadow: 0 12px 0 var(--dark) !important; }
+        
+        /* Nút 2: Xanh dương */
+        .option-btn:nth-child(2) { background: #48dbfb !important; box-shadow: 0 8px 0 var(--dark) !important;}
+        .option-btn:nth-child(2):hover { background: #0abde3 !important; transform: translateY(-4px); box-shadow: 0 12px 0 var(--dark) !important; }
+        
+        /* Nút 3: Vàng */
+        .option-btn:nth-child(3) { background: #feca57 !important; box-shadow: 0 8px 0 var(--dark) !important; }
+        .option-btn:nth-child(3):hover { background: #ff9f43 !important; transform: translateY(-4px); box-shadow: 0 12px 0 var(--dark) !important; }
+        
+        /* Nút 4: Xanh lá */
+        .option-btn:nth-child(4) { background: #1dd1a1 !important; box-shadow: 0 8px 0 var(--dark) !important;}
+        .option-btn:nth-child(4):hover { background: #10ac84 !important; transform: translateY(-4px); box-shadow: 0 12px 0 var(--dark) !important; }
+
+        /* Hiệu ứng lún nút khi nhấn */
+        .option-btn:active { transform: translateY(8px) !important; box-shadow: 0 0px 0 var(--dark) !important; }
+        
+        /* Khi nút bị khóa (sau khi chọn đáp án) */
+        .option-btn:disabled { opacity: 0.7 !important; cursor: not-allowed !important; transform: translateY(8px) !important; box-shadow: 0 0px 0 var(--dark) !important; background: #e8ecef !important; border-color: #a4b0be !important;}
+
+        /* ================= MODAL & BẢNG ĐIỂM ================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(34, 47, 62, 0.7); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content {
+            background: #ffffff; padding: 40px 30px; border-radius: 35px; text-align: center; width: 90%; max-width: 450px;
+            box-shadow: 0 20px 0 rgba(0,0,0,0.2); position: relative; border: 6px solid var(--dark); color: var(--dark); animation: popup 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .teacher-modal-content { max-width: 850px !important; padding: 35px; background: #fdfbfb;}
+        
+        .close-btn { position: absolute; top: -20px; right: -20px; font-size: 30px; font-weight: 900; color: #fff; background: var(--warning-dark); border: 4px solid var(--dark); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 var(--dark);}
+        .close-btn:hover { background: var(--warning); transform: scale(1.1) rotate(15deg); }
+        .close-btn:active { transform: scale(0.9); box-shadow: 0 0px 0 var(--dark); top: -16px;}
+
+        .modal-content h2 { color: var(--primary-dark); font-size: 36px; margin-bottom: 10px; font-weight: 900; text-shadow: 2px 2px 0 #fff, 0 4px 0 rgba(0,0,0,0.1); text-transform: uppercase;}
+        .modal-content p { color: #576574; font-size: 18px; margin-bottom: 20px; font-weight: 800;}
+        .modal-content input[type="text"] {
+            width: 100%; padding: 15px; margin: 20px 0; border: 4px solid var(--dark); border-radius: 20px;
+            font-size: 24px; text-align: center; font-weight: 900; outline: none; transition: 0.3s; background: var(--bg-light); color: var(--dark);
+            box-shadow: inset 0 4px 0 rgba(0,0,0,0.05);
+        }
+        .modal-content input[type="text"]:focus { border-color: var(--primary-dark); background: #ffffff; }
+
+        .styled-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; background: #fff; border: 4px solid var(--dark); border-radius: 15px; overflow: hidden; box-shadow: 0 6px 0 var(--dark);}
+        .styled-table thead tr { background: var(--primary); color: var(--dark); }
+        .styled-table th { padding: 15px; font-weight: 900; font-size: 16px; border-bottom: 4px solid var(--dark); border-right: 2px solid var(--dark);}
+        .styled-table th:last-child { border-right: none; }
+        .styled-table td { padding: 15px; border-bottom: 2px solid var(--dark); border-right: 2px solid var(--dark); font-weight: 800; color: var(--dark); }
+        .styled-table td:last-child { border-right: none; }
+        .styled-table tbody tr:last-child td { border-bottom: none; }
+        .styled-table tbody tr:hover { background: var(--bg-light); }
+
+        /* ================= MASCOT & FOOTER ================= */
+        .mascot-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; align-items: flex-end; gap: 15px; }
+        .speech-bubble {
+            background: #ffffff; color: var(--dark); padding: 15px 25px; border-radius: 25px 25px 0 25px; font-weight: 900; font-size: 18px;
+            box-shadow: 0 8px 0 var(--dark); opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 250px; border: 4px solid var(--dark);
+        }
+        .speech-bubble.show { opacity: 1; transform: translateY(0); }
+        .mascot { font-size: 85px; filter: drop-shadow(0 10px 0 rgba(0,0,0,0.15)); animation: float 2.5s ease-in-out infinite; cursor: pointer; transition: transform 0.2s; }
+        .mascot:hover { transform: scale(1.1) rotate(10deg); animation: none; }
+        .mascot:active { transform: scale(0.9); }
+
+        footer { padding: 30px 20px; text-align: center; color: var(--dark); width: 100%; margin-top: auto; font-weight: 900; }
+        .teacher-login-link {
+            background: #ffffff; border: 3px solid var(--dark); color: var(--dark); padding: 10px 20px; border-radius: 20px; 
+            cursor: pointer; margin-top: 20px; font-size: 15px; font-weight: 900; transition: 0.1s; box-shadow: 0 4px 0 var(--dark);
+        }
+        .teacher-login-link:hover { background: var(--yellow); transform: translateY(-2px); box-shadow: 0 6px 0 var(--dark); }
+        .teacher-login-link:active { transform: translateY(4px); box-shadow: 0 0 0 var(--dark); }
+
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+
+        @media (max-width: 768px) {
+            .options { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 36px; text-shadow: 2px 2px 0 #fff; }
+            .nav-links { display: none; }
+            .mascot { font-size: 65px; }
+            .quiz-container { padding: 25px 20px; margin: 30px 10px; border-width: 4px; border-radius: 30px;}
+            .modal-content { margin-top: -10vh; padding: 30px 20px; }
+            header { padding: 15px; margin: 10px; border-radius: 25px; border-width: 3px;}
+        }
+        @media (hover: none) {
+            .login-btn:hover, .hero-btn:hover, .option-btn:hover { transform: none !important; box-shadow: inherit !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <a href="#" class="logo">🚀 <span>IT Thầy Luân</span></a>
+            <div class="header-right">
+                <ul class="nav-links">
+                    <li><a href="#kham-pha">🔍 Khám Phá</a></li>
+                    <li><a href="#dau-truong">🏆 Đấu Trường</a></li>
+                </ul>
+                <button id="login-btn" class="btn-3d login-btn" onclick="openLoginModal()">🎓 Đăng nhập</button>
+            </div>
+        </header>
+
+        <main style="width: 100%;">
+            <!-- HERO -->
+            <section class="hero">
+                <h1>Chào mừng đến với <br>Trạm Vũ Trụ Tin học - Công Nghệ!</h1>
+                <a href="#kham-pha" class="btn-3d hero-btn">Bắt đầu hành trình 🛸</a>
+            </section>
+
+            <!-- BÀI HỌC -->
+            <section id="kham-pha" class="lessons">
+                <h2 class="section-title">Khám phá kiến thức</h2>
+                <div class="lesson-grid">
+                    <div class="card" onclick="startLesson('tin3_chuot')">
+                        <div class="card-icon">🖱️</div>
+                        <span class="tag tag-it">Tin Học Lớp 3</span>
+                        <h3>Ôn tập</h3>
+                        <p>Bấm vào đây để ôn tập nhé các em!</p>
+                    </div>
+                    
+                    <div class="card" onclick="startLesson('tin4_phim')">
+                        <div class="card-icon">⌨️</div>
+                        <span class="tag tag-it">Tin Học Lớp 4</span>
+                        <h3>Ôn tập</h3>
+                        <p>Bấm vào đây để ôn tập nhé các em!</p>
+                    </div>
+                    
+                    <div class="card" onclick="startLesson('cn5_robot')">
+                        <div class="card-icon">🤖</div>
+                        <span class="tag tag-tech">Tin học Lớp 5</span>
+                        <h3>Ôn tập</h3>
+                        <p>Bấm vào đây để ôn tập nhé các em!</p>
+                    </div>
+
+		<div class="card" onclick="startLesson('cn5_robot')">
+                        <div class="card-icon">🤖</div>
+                        <span class="tag tag-tech">Công nghệ 3</span>
+                        <h3>Ôn tập</h3>
+                        <p>Bấm vào đây để ôn tập nhé các em!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ĐẤU TRƯỜNG -->
+            <section id="dau-truong" class="quiz-container">
+                <h2 class="quiz-title">Đấu Trường Trí Tuệ</h2>
+                <div class="progress-bar-bg">
+                    <div class="progress-fill" id="progress-bar"></div>
+                </div>
+                
+                <div id="quiz-content">
+                    <div class="question" id="question-text">Em hãy chọn một bài học ở trên để bắt đầu!</div>
+                    <div class="options" id="options-container"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <h3>Trường Tiểu Học Lê Quý Đôn</h3>
+            <p style="margin-top: 5px; font-size: 16px; color: #6c757d;">Thiết kế bởi Thầy Luân ❤️ 2026</p>
+            <button class="teacher-login-link" onclick="openTeacherDashboard()">👨‍🏫 Quản lý của Giáo viên</button>
+        </footer>
+
+        <!-- MODAL ĐĂNG NHẬP -->
+<div id="login-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button type="button" class="close-btn" onclick="closeLoginModal()">×</button>
+        <h2>Chào mừng em! 🌟</h2>
+        <p>Em hãy nhập tên của mình vào đây nhé:</p>
+        
+        <!-- Bọc Form để tương thích hoàn hảo 100% với điện thoại di động -->
+        <form onsubmit="event.preventDefault(); saveStudentName();">
+            <input type="text" id="student-name-input" placeholder="Ví dụ: Nhã Uyên..." required>
+            <button type="submit" class="btn-3d hero-btn" style="width:100%">Bắt đầu học ngay!</button>
+        </form>
+
+    </div>
+</div>
+
+        <!-- MODAL BẢNG ĐIỂM CỦA GIÁO VIÊN -->
+        <div id="teacher-modal" class="modal-overlay">
+            <div class="modal-content teacher-modal-content">
+                <button class="close-btn" onclick="closeTeacherDashboard()">×</button>
+                <h2>📊 Bảng Điểm Lớp Học</h2>
+                
+                <div style="max-height: 350px; overflow-y: auto; border-radius: 15px; margin-top: 15px; border: 1px solid #e2e8f0;">
+                    <table class="styled-table" id="student-records-table" style="margin: 0;">
+                        <thead style="position: sticky; top: 0; z-index: 1;">
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Tên học sinh</th>
+                                <th>Bài học</th>
+                                <th>Điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-body"></tbody>
+                    </table>
+                </div>
+                
+                <!-- NÚT XUẤT EXCEL & XÓA DỮ LIỆU -->
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button onclick="exportToExcel()" class="btn-3d" style="flex: 1; background: var(--success); color: var(--dark); box-shadow: 0 5px 0px #0492c2; font-size: 16px;">
+                        📥 Xuất file Excel
+                    </button>
+                    <button onclick="clearAllRecords()" class="btn-3d" style="flex: 1; background: var(--warning); color: white; box-shadow: 0 5px 0px #b5175e; font-size: 16px;">
+                        🗑️ Xóa dữ liệu
+                    </button>
+                </div>
+
+                <!-- KHU VỰC MỚI: NẠP CÂU HỎI TỪ EXCEL -->
+                <hr style="margin: 20px 0; border: 1px dashed #cbd5e1;">
+                <h3 style="text-align: left; color: var(--primary); margin-bottom: 10px; font-size: 20px;">📝 Nạp câu hỏi từ Excel</h3>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                    <select id="lesson-select" style="padding: 12px; border-radius: 12px; border: 2px solid #e2e8f0; font-weight: bold; color: var(--dark); outline: none;">
+                        <option value="tin3_chuot">Tin Học Lớp 3</option>
+                        <option value="tin4_phim">Tin Học Lớp 4</option>
+                        <option value="cn5_robot">Tin học Lớp 5</option>
+			<option value="cn5_robot">Công nghệ Lớp 3</option>
+                    </select>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="downloadExcelTemplate()" class="btn-3d" style="flex: 1; background: var(--yellow); color: var(--dark); box-shadow: 0 5px 0px #d9a01c; font-size: 15px; padding: 10px;">
+                            📥 Tải file Excel mẫu
+                        </button>
+                        
+                        <input type="file" id="excel-file-upload" accept=".xlsx, .xls" style="display: none;" onchange="handleExcelUpload(event)">
+                        
+                        <button onclick="document.getElementById('excel-file-upload').click()" class="btn-3d" style="flex: 1; background: var(--secondary); color: white; box-shadow: 0 5px 0px #1f1a8c; font-size: 15px; padding: 10px;">
+                            📂 Chọn file nạp vào
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MASCOT -->
+        <div class="mascot-container">
+            <div class="speech-bubble" id="speech-bubble">Chào em! Cùng học nhé!</div>
+            <div class="mascot" id="mascot" onclick="pokeMascot()">🤖</div>
+        </div>
+
+        <!-- CANVAS PHÁO HOA -->
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <!-- SCRIPT XỬ LÝ (ĐÃ TÍCH HỢP XUẤT EXCEL XUYÊN TƯỜNG LỬA) -->
+    <script>
+        let questionBank = {
+            'tin3_chuot': [
+                { question: "Câu 1: Chuột máy tính thường có mấy nút cơ bản?", options: ["1 nút", "2 nút (Trái, Phải) và con lăn", "4 nút", "Không có nút nào"], correct: 1 },
+                { question: "Câu 2: Để mở một phần mềm, em dùng thao tác nào?", options: ["Nháy chuột phải", "Cuộn con lăn", "Nháy đúp chuột trái", "Kéo thả chuột"], correct: 2 }
+            ],
+            'tin4_phim': [
+                { question: "Câu 1: Phím nào dài nhất trên bàn phím?", options: ["Phím Enter", "Phím Shift", "Phím Space (Cách)", "Phím Ctrl"], correct: 2 },
+                { question: "Câu 2: Hàng phím cơ sở có 2 phím có gai là phím nào?", options: ["F và J", "G và H", "A và S", "K và L"], correct: 0 }
+            ],
+            'cn5_robot': [
+                { question: "Câu 1: Bộ phận nào được xem là 'bộ não' của mô hình robot?", options: ["Động cơ", "Bánh xe", "Bảng mạch điều khiển", "Đèn LED"], correct: 2 }
+            ]
+        };
+
+        const lessonNames = { 'tin3_chuot': 'Làm quen chuột', 'tin4_phim': 'Gõ bàn phím', 'cn5_robot': 'Lắp ráp Robot' };
+
+        let quizData = []; 
+        let currentQuestion = 0;
+        let score = 0;
+        let currentLessonId = 'tin3_chuot';
+        let studentName = '';
+
+        function safeGetStorage(key, defaultVal) {
+            try { return localStorage.getItem(key) || defaultVal; } 
+            catch (e) { return defaultVal; }
+        }
+        function safeSetStorage(key, value) {
+            try { localStorage.setItem(key, value); } 
+            catch (e) { console.warn("Lỗi lưu trữ: Trình duyệt đang chặn LocalStorage"); }
+        }
+
+        const questionEl = document.getElementById('question-text');
+        const optionsEl = document.getElementById('options-container');
+        const progressEl = document.getElementById('progress-bar');
+        const speechBubble = document.getElementById('speech-bubble');
+        const mascot = document.getElementById('mascot');
+	// Bổ sung hàm updateHeaderName để tránh báo lỗi
+        function updateHeaderName() {
+            // Có thể thêm logic đổi tên trên header sau nếu cần
+        }
+
+        // Nhận diện phím Enter/Xong trên bàn phím ảo
+        document.getElementById('student-name-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveStudentName(); // Gọi thẳng hàm lưu tên
+            }
+        });
+
+        // Login
+        function openLoginModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+            if(studentName) document.getElementById('student-name-input').value = studentName;
+        }
+
+        function closeLoginModal() { 
+            document.getElementById('login-modal').style.display = 'none'; 
+        }
+        
+        function saveStudentName() {
+            const inputEl = document.getElementById('student-name-input');
+            const nameInput = inputEl.value.trim();
+            
+            if(nameInput) {
+                studentName = nameInput;
+                safeSetStorage('LopHocThayLuan_Name', studentName);
+                updateHeaderName();
+                closeLoginModal();
+                
+                // Dòng lệnh này bắt buộc điện thoại phải thu gọn bàn phím xuống
+                inputEl.blur(); 
+                
+                showMascotMessage(`Chào ${studentName}! Chúc em học tốt nhé! 🌟`);
+            } else { 
+                alert("Em nhớ nhập tên của mình vào nhé!"); 
+            }
+        }
+
+        // Bài học
+        function startLesson(lessonId) {
+            currentLessonId = lessonId;
+            quizData = questionBank[lessonId];
+            currentQuestion = 0; score = 0;
+            const greetName = studentName ? studentName : "em";
+            showMascotMessage(`Bắt đầu ôn tập nào! Thầy Luân tin ${greetName} làm được! 💪`);
+            loadQuestion();
+            document.getElementById('dau-truong').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function loadQuestion() {
+            if (!quizData || quizData.length === 0) return;
+            const currentQ = quizData[currentQuestion];
+            questionEl.innerText = currentQ.question;
+            optionsEl.innerHTML = '';
+            
+            const progress = (currentQuestion / quizData.length) * 100;
+            progressEl.style.width = progress + '%';
+
+            currentQ.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.innerText = option;
+                const colors = ['#e63946', '#2a9d8f', '#e9c46a', '#457b9d'];
+                btn.onmouseover = function() { this.style.borderBottom = `5px solid ${colors[index%4]}`; this.style.color = colors[index%4]; }
+                btn.onmouseout = function() { this.style.borderBottom = `none`; this.style.color = 'var(--dark)'; }
+                btn.onclick = function() { checkAnswer(index); }
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const correctIndex = quizData[currentQuestion].correct;
+            const buttons = document.querySelectorAll('.option-btn');
+            const callName = studentName ? studentName : "em";
+            
+            for(let i=0; i<buttons.length; i++) { buttons[i].disabled = true; }
+
+            if (selectedIndex === correctIndex) {
+                score++; triggerConfetti();
+                showMascotMessage(`Tuyệt vời! ${callName} giỏi quá! 🌟`);
+            } else {
+                mascot.classList.add('wave');
+                setTimeout(function() { mascot.classList.remove('wave'); }, 1000);
+                showMascotMessage(`Chưa chính xác rồi. Lần sau ${callName} cố lên nhé! 💪`);
+            }
+
+            setTimeout(function() {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    saveRecordToTeacherDB();
+                    progressEl.style.width = '100%';
+                    questionEl.innerHTML = `Chúc mừng ${callName} đã hoàn thành!<br>Điểm số: <span style="color:var(--yellow); font-size:40px;">${score} / ${quizData.length}</span> 🏆`;
+                    optionsEl.innerHTML = `<button class="btn-3d hero-btn" style="grid-column: 1 / -1;" onclick="document.getElementById('kham-pha').scrollIntoView({behavior: 'smooth'})">Chọn bài học khác ⬆️</button>`;
+                }
+            }, 2000);
+        }
+
+        // Bảng điểm giáo viên
+        // THẦY DÁN LINK WEB APP CỦA GOOGLE SHEETS VÀO ĐÂY:
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwk3EWU3z-ASi8yvtEo2p-9XqxnI5rY63tSgZF93_Y/dev';
+
+function saveRecordToTeacherDB() {
+    // 1. Vẫn lưu nội bộ vào thiết bị (LocalStorage) để dự phòng
+    let recordsJSON = safeGetStorage('LopHocThayLuan_Records', '[]');
+    let records = [];
+    try { records = JSON.parse(recordsJSON); } catch(e) { records = []; }
+    
+    // Đóng gói dữ liệu điểm của học sinh
+    const recordData = {
+        name: studentName || "Khách",
+        lesson: lessonNames[currentLessonId] || "Bài học",
+        score: `${score}/${quizData.length}`,
+        date: new Date().toLocaleString('vi-VN')
+    };
+    
+    // Lưu vào máy
+    records.push(recordData);
+    safeSetStorage('LopHocThayLuan_Records', JSON.stringify(records));
+
+    // 2. TỰ ĐỘNG GỬI ĐIỂM LÊN GOOGLE SHEETS (TRÊN WEB)
+    if (SCRIPT_URL !== '') {
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify(recordData)
+        })
+        .then(response => console.log("Đã đồng bộ điểm lên Google Sheets thành công!"))
+        .catch(error => console.error("Lỗi khi đồng bộ điểm:", error));
+    }
+}
+
+        function openTeacherDashboard() {
+            let pass = prompt("Xin chào Thầy Luân! Vui lòng nhập mật khẩu quản lý:");
+            if (pass === "123456") {
+                document.getElementById('teacher-modal').style.display = 'flex';
+                renderTeacherTable();
+            } else if (pass !== null) {
+                alert("Mật khẩu không đúng! Chỉ giáo viên mới được vào khu vực này.");
+            }
+        }
+
+        function closeTeacherDashboard() { document.getElementById('teacher-modal').style.display = 'none'; }
+
+        function renderTeacherTable() {
+            let recordsJSON = safeGetStorage('LopHocThayLuan_Records', '[]');
+            let records = [];
+            try { records = JSON.parse(recordsJSON); } catch(e) { records = []; }
+            
+            let tbody = document.getElementById('records-body');
+            tbody.innerHTML = '';
+            
+            if(records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Chưa có dữ liệu học sinh.</td></tr>`;
+            } else {
+                records.slice().reverse().forEach(function(r) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:#6c757d; font-size: 14px;">${r.date}</td>
+                            <td style="font-weight: 800; color: var(--primary);">${r.name}</td>
+                            <td>${r.lesson}</td>
+                            <td style="font-weight: 900; color: var(--warning); font-size: 18px;">${r.score}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function clearAllRecords() {
+            if(confirm("Thầy có chắc chắn muốn XÓA SẠCH toàn bộ điểm số trên máy này?")) {
+                safeSetStorage('LopHocThayLuan_Records', '[]');
+                renderTeacherTable();
+            }
+        }
+
+        // Xuất Excel (Base64)
+        function exportToExcel() {
+            let recordsJSON = safeGetStorage('LopHocThayLuan_Records', '[]');
+            let records = [];
+            try { records = JSON.parse(recordsJSON); } catch(e) { records = []; }
+            
+            if (records.length === 0) {
+                alert("Chưa có dữ liệu để xuất Excel!");
+                return;
+            }
+
+            let tableContent = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head><meta charset="UTF-8"></head>
+                <body>
+                    <table border="1">
+                        <tr>
+                            <th style="background-color:#4361ee; color:#ffffff; height:30px;">Thời gian</th>
+                            <th style="background-color:#4361ee; color:#ffffff;">Tên học sinh</th>
+                            <th style="background-color:#4361ee; color:#ffffff;">Bài học</th>
+                            <th style="background-color:#4361ee; color:#ffffff;">Điểm số</th>
+                        </tr>
+            `;
+
+            records.slice().reverse().forEach(function(r) {
+                tableContent += `
+                    <tr>
+                        <td style="text-align: center;">${r.date}</td>
+                        <td>${r.name}</td>
+                        <td>${r.lesson}</td>
+                        <td style="text-align: center;">="${r.score}"</td>
+                    </tr>
+                `;
+            });
+
+            tableContent += `</table></body></html>`;
+
+            let uri = 'data:application/vnd.ms-excel;base64,';
+            let base64data = window.btoa(unescape(encodeURIComponent(tableContent)));
+
+            const link = document.createElement("a");
+            link.href = uri + base64data;
+            link.download = "Bang_Diem_Lop_Hoc_Thay_Luan.xls";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Mascot & Pháo hoa
+        let bubbleTimer;
+        function showMascotMessage(text) {
+            speechBubble.innerText = text; speechBubble.classList.add('show');
+            clearTimeout(bubbleTimer);
+            bubbleTimer = setTimeout(function() { speechBubble.classList.remove('show'); }, 3000);
+        }
+        function pokeMascot() {
+            mascot.classList.add('wave');
+            setTimeout(function() { mascot.classList.remove('wave'); }, 1000);
+            const callName = studentName ? studentName : "em";
+            const msgs = [`Thầy Luân chào ${callName}!`, `${callName} đã ôn bài chưa?`, "Học Tin học thật vui!"];
+            showMascotMessage(msgs[Math.floor(Math.random() * msgs.length)]);
+        }
+
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const colors = ['#FFD166', '#06D6A0', '#f72585', '#4cc9f0', '#FFFFFF'];
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerConfetti() {
+            particles = [];
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 10 + 5, speedY: Math.random() * 4 + 2, speedX: Math.random() * 4 - 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360, rotationSpeed: Math.random() * 10 - 5
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let active = false;
+            for(let i=0; i<particles.length; i++) {
+                let p = particles[i];
+                p.y += p.speedY; p.x += p.speedX; p.rotation += p.rotationSpeed;
+                if (p.y < canvas.height) active = true;
+                ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size); ctx.restore();
+            }
+            if (active) requestAnimationFrame(animateConfetti);
+            else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Khởi chạy an toàn
+        function initApp() {
+            studentName = safeGetStorage('LopHocThayLuan_Name', '');
+            updateHeaderName();
+            quizData = questionBank['tin3_chuot'];
+            loadQuestion();
+            
+            setTimeout(function() {
+                if(studentName) showMascotMessage(`Chào mừng ${studentName} quay lại! 🛸`);
+                else showMascotMessage("Chào mừng đến Trạm Vũ Trụ! 🛸");
+            }, 500);
+        }
+// ======= CHỨC NĂNG QUẢN LÝ CÂU HỎI BẰNG EXCEL =======
+        
+        // 1. Hàm lưu và tải bộ câu hỏi từ LocalStorage (để F5 không bị mất)
+        function loadCustomQuestionBank() {
+            let savedBank = safeGetStorage('LopHocThayLuan_CustomQuestions', null);
+            if (savedBank) {
+                try { questionBank = JSON.parse(savedBank); } 
+                catch (e) { console.error("Lỗi đọc dữ liệu câu hỏi"); }
+            }
+        }
+        
+        // Gọi hàm này ngay khi khởi động
+        loadCustomQuestionBank();
+
+        // 2. Hàm xử lý khi chọn file Excel tải lên
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0]; // Đọc sheet đầu tiên
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    const lessonId = document.getElementById('lesson-select').value;
+                    let newQuestions = [];
+
+                    json.forEach(row => {
+                        // Ánh xạ dữ liệu từ cột Excel
+                        if (row['Câu hỏi']) {
+                            newQuestions.push({
+                                question: row['Câu hỏi'],
+                                options: [
+                                    row['Đáp án A'] || "",
+                                    row['Đáp án B'] || "",
+                                    row['Đáp án C'] || "",
+                                    row['Đáp án D'] || ""
+                                ],
+                                correct: parseInt(row['Đáp án đúng (0-3)']) || 0
+                            });
+                        }
+                    });
+
+                    if (newQuestions.length > 0) {
+                        // Cập nhật câu hỏi cho bài học được chọn
+                        questionBank[lessonId] = newQuestions;
+                        // Lưu vào bộ nhớ máy
+                        safeSetStorage('LopHocThayLuan_CustomQuestions', JSON.stringify(questionBank));
+                        alert(`Thành công! Đã nạp ${newQuestions.length} câu hỏi vào bài học.`);
+                    } else {
+                        alert("Không tìm thấy dữ liệu. Thầy nhớ dùng 'File mẫu' để nhập liệu nhé!");
+                    }
+                } catch (error) {
+                    alert("Có lỗi xảy ra khi đọc file Excel. Định dạng không hợp lệ.");
+                }
+                // Xóa file trong input để có thể tải lại file đó nếu cần
+                document.getElementById('excel-file-upload').value = "";
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 3. Hàm tạo file Excel mẫu cho giáo viên tải về nhập liệu
+        function downloadExcelTemplate() {
+            const templateData = [
+                {
+                    "Câu hỏi": "Câu 1: Phím nào dài nhất trên bàn phím?",
+                    "Đáp án A": "Phím Enter",
+                    "Đáp án B": "Phím Shift",
+                    "Đáp án C": "Phím Space (Cách)",
+                    "Đáp án D": "Phím Ctrl",
+                    "Đáp án đúng (0-3)": 2
+                },
+                {
+                    "Câu hỏi": "Câu 2: Câu hỏi mẫu (Đáp án đúng là A thì ghi 0)",
+                    "Đáp án A": "Đáp án đúng",
+                    "Đáp án B": "Sai",
+                    "Đáp án C": "Sai",
+                    "Đáp án D": "Sai",
+                    "Đáp án đúng (0-3)": 0
+                }
+            ];
+            
+            // Chuyển JSON thành Sheet và xuất file
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            
+            // Chỉnh độ rộng cột cho đẹp
+            ws['!cols'] = [{wch: 40}, {wch: 20}, {wch: 20}, {wch: 20}, {wch: 20}, {wch: 20}];
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "DanhSachCauHoi");
+            XLSX.writeFile(wb, "Mau_Nhap_Cau_Hoi_Thay_Luan.xlsx");
+        }
+        initApp();
+    </script>
+</body>
+</html>
